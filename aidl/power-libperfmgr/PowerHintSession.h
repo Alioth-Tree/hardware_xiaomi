@@ -123,6 +123,9 @@ class PowerHintSession : public BnPowerHintSession {
     
     // To cache the status of whether ADPF hints are supported.
     std::unordered_map<std::string, std::optional<bool>> mSupportedHints;
+    
+    // Used when setting a temporary boost value to hold the true boost
+    std::atomic<std::optional<int>> mNextUclampMin;
 };
 
 }  // namespace pixel
