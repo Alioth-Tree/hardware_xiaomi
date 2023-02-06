@@ -216,7 +216,7 @@ int PowerHintSession::getUclampMin() {
 void PowerHintSession::dumpToStream(std::ostream &stream) {
     stream << "ID.Min.Act.Timeout(" << getIdString();
     stream << ", " << mDescriptor->current_min;
-    stream << ", " << mDescriptor->is_active;
+    stream << ", " << mDescriptor->is_active.load();
     stream << ", " << isTimeout() << ")";
 }
 
@@ -236,6 +236,7 @@ ndk::ScopedAStatus PowerHintSession::pause() {
         ATRACE_INT(sz.c_str(), mDescriptor->is_active.load());
     }
     updateUniveralBoostMode();
+    PowerSessionManager::getInstance()->removeThreadsFromPowerSession(this);
     return ndk::ScopedAStatus::ok();
 }
 
@@ -247,6 +248,7 @@ ndk::ScopedAStatus PowerHintSession::resume() {
     if (mDescriptor->is_active.load())
         return ndk::ScopedAStatus::fromExceptionCode(EX_ILLEGAL_STATE);
     mDescriptor->is_active.store(true);
+    PowerSessionManager::getInstance()->addThreadsFromPowerSession(this);
     // resume boost
     setSessionUclampMin(mDescriptor->current_min);
     if (ATRACE_ENABLED()) {
