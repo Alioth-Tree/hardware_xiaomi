@@ -78,7 +78,6 @@ class PowerSessionManager : public MessageHandler {
     const std::string kDisableBoostHintName;
 
     std::unordered_set<PowerHintSession *> mSessions;  // protected by mLock
-    std::unordered_map<int, int> mTidRefCountMap;      // protected by mLock
     std::unordered_map<int, std::unordered_set<PowerHintSession *>> mTidSessionListMap;
     sp<WakeupHandler> mWakeupHandler;
     bool mActive;  // protected by mLock
